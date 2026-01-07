@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -7,10 +6,10 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 /**
- * Grafische Oberfläche und Main-Klasse
+ * Grafische OberflÃ¤che und Main-Klasse
  */
-public class Main extends JFrame{
-    
+public class Main extends JFrame {
+
     // Einstellung des Fensters
     public JFrame window;
     private String title = "Maze Generation and shortest Path";
@@ -22,8 +21,10 @@ public class Main extends JFrame{
     public Graphics g;
 
     private Random r = new Random();
-    
+
     int x = 10;
+
+    private Cell[][] cells;
 
     /**
      * Konstruktor. Erstellt ein Fenster.
@@ -45,20 +46,19 @@ public class Main extends JFrame{
         g = paintingArea.getGraphics();
     }
 
-    
     /**
      * Zeichenbereich
      */
     @Override
     public void paint(Graphics g) {
-        // Zeichenbereich löschen 
+        // Zeichenbereich lï¿½schen 
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, WIDTH, HEIGHT);
-        
+
         x++;
         // Beispiellinie Zeichnen
         g.setColor(Color.BLACK);
-        g.drawLine(0,0,x,100);
+        g.drawLine(0, 0, x, 100);
     }
 
     /**
@@ -67,12 +67,29 @@ public class Main extends JFrame{
      */
     public static void main(String[] args) {
         Main m = new Main();
+        
+        m.enumerateCells();
+        
         while (true) {
             m.paintingArea.repaint();
+            for (Cell[] row : m.cells) {
+                for (Cell cell : row) {
+                    cell.draw(m.g);
+                }
+            }
             try {
                 Thread.sleep(20);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
+            }
+        }
+    }
+
+    private void enumerateCells() {
+        cells = new Cell[WIDTH / 25][HEIGHT / 25];
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[i].length; j++) {
+                cells[i][j] = new Cell(i, j);
             }
         }
     }
