@@ -22,8 +22,6 @@ public class Main extends JFrame {
 
     private Random r = new Random();
 
-    int x = 10;
-
     private Cell[][] cells;
 
     /**
@@ -55,10 +53,13 @@ public class Main extends JFrame {
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        x++;
-        // Beispiellinie Zeichnen
         g.setColor(Color.BLACK);
-        g.drawLine(0, 0, x, 100);
+        
+        for (Cell[] row : cells) {
+                for (Cell cell : row) {
+                    cell.draw(g);
+                }
+            }
     }
 
     /**
@@ -72,11 +73,6 @@ public class Main extends JFrame {
         
         while (true) {
             m.paintingArea.repaint();
-            for (Cell[] row : m.cells) {
-                for (Cell cell : row) {
-                    cell.draw(m.g);
-                }
-            }
             try {
                 Thread.sleep(20);
             } catch (InterruptedException ex) {
