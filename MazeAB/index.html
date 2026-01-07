@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Q1 IF: List, Queue und Stack</title>
+  <link href="style.css" type="text/css" rel="stylesheet">
+  <script src="spoiler.js"></script>
+  <script src="toc.js"></script>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+  
+</head>
+<body onload="toc();setSpoiler();">
+  <header>
+    <h1>Maze-Generation und kürzeste Wege</h1>
+  </header>
+  <nav>
+    <p><i class="fa fa-bars"></i></p>
+    <div id="navcontent"></div>
+  </nav>
+  <main>
+
+
+    <h2>Ziele und Überblick</h2>
+    <p>Die Datenstrukturen Stack und Queue finden beide Anwendung in zwei sehr wichtigen Algorithmen. Der Tiefensuche (Depth-First Search) und der Breitensuche (breadth-first search).</p>
+    <p>Als Anwendung der Klasse Stack wird zunächst ein Algorithmus zur Erzeugung von Labyrinthen erstellt. Diese Idee wird dann erweitert auf das finden eines kürzesten Wegs zur Lösung des Labyrinths. Hier wird die Klasse Queue verwendet.</p>
+
+    <h2>Maze-Generation</h2>
+    <h3>Labyrinth</h3>
+    <figure>
+      <img src="img/mazebig.png">
+      <figcaption>Einfaches Labyrinth</figcaption>
+    </figure>
+    <p>Zur Vereinfachung betrachten wir Labyrinthe auf einem Gitter (Grid) aus Rechtecken. Ein gutes Labyrinth soll zwei Anforderungen genügen:</p>
+    <ol>
+      <li>Von jedem beliebigen Startpunkt auf soll man überall in Labyrinth hinkommen.</li>
+      <li>Der Weg soll nicht zu simpel sein.</li>
+    </ol>
+    Abbildung 1 zeigt solch ein Labyrinth. Du kannst es gerne ausprobieren und zum Beispiel von oben links nach unten rechts den Weg suchen. 
+    
+    <h3>Der Maze-Generation-Algorithmus: Tiefensuche</h3>
+    <figure>
+      <img src="img/Generation.gif">
+      <figcaption>Einfaches Labyrinth</figcaption>
+    </figure>
+    <p>Die Idee ist recht simpel und in Abbildung 2 dargestellt. Man beginnt mit einem Gitter aus Zellen (Cell). Beginne bei einer beliebigen Zelle (im Beispiel einfach oben links) und suche dann eine zufällige, noch nicht besuchte, Nachbarzelle aus. Entferne dazwischen die Wand. Wiederhole diese Schritte, solange es noch nicht besuchte, in der Animation grau dargestellte, Zellen gibt. Und nun der Trick: Geht es irgendwann nicht weiter, dann laufe solange den Weg zurück, bis es wieder eine mögliche Nachbarzelle gibt und mache da weiter. Wurden alle Zellen besucht, ist ein Labyrinth fertig. Dieses Verfahren ist recht einfach, bei großen Labyrinthen wird es aber per Hand recht aufwendig.</p>
+    <p>Pseudocode der Tiefensuche mit Stack (entnommen von <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm">Wikipedia</a>)</p>
+    <ol>
+      <li>Choose the initial cell, mark it as visited and push it to the stack</li>
+      <li>While the stack is not empty
+      <ol>
+        <li>Pop a cell from the stack and make it a current cell</li>
+        <li>If the current cell has any neighbours which have not been visited
+        <ol>
+          <li>Push the current cell to the stack</li>
+          <li>Choose one of the unvisited neighbours</li>
+          <li>Remove the wall between the current cell and the chosen cell</li>
+          <li>Mark the chosen cell as visited and push it to the stack</li>
+        </ol>
+        </li>
+      </ol>
+    </li>
+    </ol>
+    
+    <div class="task">
+      <h3>Implementieren</h3>
+      <ol>
+        <li>Entpacke das Projekt <a href="Maze.zip">Maze</a> und öffne dies in BlueJ. Lies dich in das Beispielprojekt ein. </li>
+        <li>Implementiere die Klasse Cell und erweitere die Main Klasse um ein mehrdimensionales Array cells, welches aus Objekten der Klasse Cell besteht. Ein Objekt der Klasse Cell entspricht dann einer Zell im Grid. Jede Zelle hat eine Position im Grid und muss sich merken ob es schon besucht wurde (boolean visited). Im weiteren Verlauf des Algorithmus werden diese Zellen besucht und dann Wände entfernt. Bereite auch dies vor. Noch nicht besuchte Zellen zeichnen alle Wände, sind also im Grunde ein Quadrat. Bei besuchten Zellen wurden Wände entfernt. Diese werden dann nicht mehr gezeichnet.</li>
+      </ol>
+      
+      <div class="hide">
+<pre class="prettyprint">
+import java.awt.Graphics;
+
+/**
+ * Eine Zelle im Grid.
+ * 
+ * Zur Darstellung werden verschiedne Attribute gespeichert. 
+ */
+public class Cell{
+    // Größe im Grid, bestimmt die Anzahl Zellen.
+    final static int size = 10;
+    // Position im Grid
+    int x, y;
+    // Wände. True steht für Wand, false für Durchgang
+    boolean top=true, right=true, bottom=true, left=true;
+    
+    // Für Maze-Generation
+    boolean visited = false;
+
+
+    public Cell( int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Zeichnet die Wände der Cell.
+     */
+    public void draw(Graphics g){
+        if(top){
+            g.drawLine(x*size    ,y*size     ,(x+1)*size,y*size);
+        }
+        if(right){
+            g.drawLine((x+1)*size,y*size     ,(x+1)*size,(y+1)*size);
+        }
+        if(bottom){
+            g.drawLine((x+1)*size,(y+1)*size ,x*size    ,(y+1)*size);
+        }
+        if(left){
+            g.drawLine(x*size    ,(y+1)*size ,x*size    ,y*size);
+        }
+
+    }
+}
+</pre>
+      </div>
+    </div>
+  </main>
+</body>
+
+
+</html>

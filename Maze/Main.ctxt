@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Main
+comment0.text=\r\n\ Grafische\ Oberfl\u00E4che\ und\ Main-Klasse\r\n
+comment1.params=
+comment1.target=Main()
+comment1.text=\r\n\ Konstruktor.\ Erstellt\ ein\ Fenster.\r\n
+comment2.params=g
+comment2.target=void\ paint(java.awt.Graphics)
+comment2.text=\r\n\ Zeichenbereich\r\n
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+comment3.text=\r\n\ main\ Methode.\ Startet\ das\ Fenster\ und\ zeichnet\ ruft\ wiederholt\ die\r\n\ Methode\ paint\ auf.\ Nach\ jedem\ Schritt\ werden\ 20ms\ Pause\ gemacht.\r\n
+numComments=4
